@@ -1,4 +1,4 @@
-const { charsets } = require('password-sheriff');
+const charsets = require('password-sheriff').charsets;
 
 const upperCase = charsets.upperCase;
 const lowerCase = charsets.lowerCase;
