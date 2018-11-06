@@ -1,11 +1,11 @@
-const charsets = require('password-sheriff').charsets;
+var charsets = require('password-sheriff').charsets;
 
-const upperCase = charsets.upperCase;
-const lowerCase = charsets.lowerCase;
-const numbers = charsets.numbers;
-const specialCharacters = charsets.specialCharacters;
+var upperCase = charsets.upperCase;
+var lowerCase = charsets.lowerCase;
+var numbers = charsets.numbers;
+var specialCharacters = charsets.specialCharacters;
 
-const policies = {
+var policies = {
   none: {
     length: { minLength: 1 }
   },
