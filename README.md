@@ -23,3 +23,4 @@ Password policies presets used by Auth0. Extracted from [password-sheriff](https
 * minimum characters: 10 
 * contains at least one character in three different groups out of: lowerCase, upperCase, numbers, specialCharacters
 * may not contain any character repeated more than twice
+
