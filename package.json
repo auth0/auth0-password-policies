@@ -6,6 +6,6 @@
   "author": "Shaun Starsprung <shaun.starsprung@auth0.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "password-sheriff": "^1.1.0"
+    "password-sheriff": "^1.1.1"
   }
 }

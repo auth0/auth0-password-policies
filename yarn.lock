@@ -2,6 +2,7 @@
 # yarn lockfile v1
 
 
-password-sheriff@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/password-sheriff/-/password-sheriff-1.1.0.tgz#fdb3c3d845a0a3c92de422b2ad9346ce08a71413"
+password-sheriff@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/password-sheriff/-/password-sheriff-1.1.1.tgz#39efe081be197d4d46fb3b0763288daedef40400"
+  integrity sha512-bt0ptyUs97Fb2ZXUcdQP0RYrBFjzO6KhGTjq4RkmR388c6wcT3khG0U7Bvvqwq3DyShEZ9IACed9JMVyAxdaCA==
