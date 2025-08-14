@@ -35,11 +35,6 @@ const policies = {
   },
 };
 
-/**
- * Enum for character types
- * @constant
- * @type {Object}
- */
 const CHARACTER_TYPES = {
   LOWERCASE: "lowercase",
   UPPERCASE: "uppercase",
