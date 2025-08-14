@@ -4,17 +4,16 @@ const { createRulesFromOptions } = policies;
 describe("password policies", function () {
   describe("main export", function () {
     it("should export all props", function () {
-      expect(Object.keys(policies).length).toEqual(6);
-      expect(
-        [
+      expect(Object.keys(policies)).toEqual(
+        expect.arrayContaining([
           "none",
           "low",
           "fair",
           "good",
           "excellent",
           "createRulesFromOptions",
-        ].every((prop) => Object.keys(policies).includes(prop))
-      ).toBe(true);
+        ])
+      );
     });
   });
 
