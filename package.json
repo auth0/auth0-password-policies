@@ -5,6 +5,12 @@
   "repository": "git@github.com:auth0/auth0-password-policies.git",
   "author": "Shaun Starsprung <shaun.starsprung@auth0.com>",
   "license": "UNLICENSED",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
   "dependencies": {
     "password-sheriff": "^1.1.0"
   }
