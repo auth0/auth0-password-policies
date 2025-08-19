@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # Aug 2025
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@5e2628c959b9ade56971c0afcebbe5332d44b398 # Aug 2025
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
@@ -40,20 +40,21 @@ jobs:
       id-token: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch full history to check branch ancestry
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # Aug 2025
 
-      - name: Verify tag is on master branch
+      - name: Verify tag is on release_workflow branch (TEMP)
         shell: bash
         run: |
-          # Check if the current commit (tag) is reachable from master
-          if ! git merge-base --is-ancestor HEAD origin/master; then
-            echo "Error: Tag ${{ github.ref_name }} is not on the master branch"
-            echo "Tags can only be published from commits that exist on master"
+
+          git fetch origin release_workflow
+
+          # Check if the current commit (tag) is reachable from release_workflow
+          if ! git merge-base --is-ancestor HEAD origin/release_workflow; then
+            echo "Error: Tag ${{ github.ref_name }} is not on the release_workflow branch"
+            echo "Tags can only be published from commits that exist on release_workflow"
             exit 1
           fi
-          echo "✅ Tag ${{ github.ref_name }} is on master branch"
+          echo "✅ Tag ${{ github.ref_name }} is on release_workflow branch"
 
       - name: Validate tag format
         shell: bash
@@ -66,7 +67,7 @@ jobs:
           fi
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@5e2628c959b9ade56971c0afcebbe5332d44b398 # Aug 2025
         with:
           node-version: 20
           cache: 'yarn'
