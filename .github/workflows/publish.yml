@@ -1,5 +1,6 @@
 name: Test and Publish
 
+
 on:
   push:
     branches: [ master ]
@@ -42,7 +43,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # Aug 2025
 
-      - name: Verify tag is on master branch (TEMP)
+      - name: Verify tag is on master branch
         shell: bash
         run: |
 
