@@ -42,19 +42,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # Aug 2025
 
-      - name: Verify tag is on release_workflow branch (TEMP)
+      - name: Verify tag is on master branch (TEMP)
         shell: bash
         run: |
 
-          git fetch origin release_workflow
+          git fetch origin master
 
-          # Check if the current commit (tag) is reachable from release_workflow
-          if ! git merge-base --is-ancestor HEAD origin/release_workflow; then
-            echo "Error: Tag ${{ github.ref_name }} is not on the release_workflow branch"
-            echo "Tags can only be published from commits that exist on release_workflow"
+          # Check if the current commit (tag) is reachable from master
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "Error: Tag ${{ github.ref_name }} is not on the master branch"
+            echo "Tags can only be published from commits that exist on master"
             exit 1
           fi
-          echo "✅ Tag ${{ github.ref_name }} is on release_workflow branch"
+          echo "✅ Tag ${{ github.ref_name }} is on master branch"
 
       - name: Validate tag format
         shell: bash
