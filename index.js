@@ -99,7 +99,7 @@ function createRulesFromOptions(options = {}) {
 
     if (!hasAllFourTypes) {
       throw new Error(
-        `'3_of_4' character_type_rule can only be used when all four character types (${Object.values(
+        `'three_of_four' character_type_rule can only be used when all four character types (${Object.values(
           CHARACTER_TYPES
         ).join(", ")}) are selected`
       );
