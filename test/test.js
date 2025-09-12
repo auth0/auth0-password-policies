@@ -125,7 +125,7 @@ describe("password policies", function () {
         expect(function () {
           const auth0Config = {
             character_types: ["lowercase", "uppercase"],
-            character_type_rule: "3_of_4",
+            character_type_rule: "three_of_four",
           };
           createRulesFromOptions(auth0Config);
         }).toThrow(
