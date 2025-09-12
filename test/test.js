@@ -129,7 +129,7 @@ describe("password policies", function () {
           };
           createRulesFromOptions(auth0Config);
         }).toThrow(
-          "'3_of_4' character_type_rule can only be used when all four character types (lowercase, uppercase, number, special) are selected"
+          "'three_of_four' character_type_rule can only be used when all four character types (lowercase, uppercase, number, special) are selected"
         );
       });
     });
