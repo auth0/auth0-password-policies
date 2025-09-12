@@ -121,7 +121,7 @@ describe("password policies", function () {
         });
       });
 
-      it("when set to '3_of_4', should throw an error when all 4 character types are NOT specified", function () {
+      it("when set to 'three_of_four', should throw an error when all 4 character types are NOT specified", function () {
         expect(function () {
           const auth0Config = {
             character_types: ["lowercase", "uppercase"],
