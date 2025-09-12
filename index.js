@@ -46,8 +46,8 @@ const CHARACTER_TYPES = {
  * @typedef {Object} PasswordOptions
  * @property {number} [min_length=15] - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
- * @property {boolean} [require_3of4_character_types=false] - Whether to require 3 out of 4 character types (requires all 4 types to be specified)
- * @property {'allow'|'disallow'} [identical_characters='disallow'] - Whether to allow >2 identical consecutive characters
+ * @property {'all'|'3of4'} [character_type_rule='all'] - How many character types are required
+ * @property {'allow'|'disallow'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  */
 
 /**
@@ -58,8 +58,8 @@ const CHARACTER_TYPES = {
 const DEFAULT_PASSWORD_OPTIONS = {
   min_length: 15,
   character_types: [],
-  require_3of4_character_types: false,
-  identical_characters: "disallow",
+  character_type_rule: "all",
+  identical_characters: "allow",
 };
 
 /**
@@ -76,7 +76,7 @@ function createRulesFromOptions(options = {}) {
   const {
     min_length: minLength,
     character_types: requiredTypes,
-    require_3of4_character_types: require3of4,
+    character_type_rule: characterTypeRule,
     identical_characters: identicalChars,
   } = { ...DEFAULT_PASSWORD_OPTIONS, ...options };
 
@@ -88,7 +88,8 @@ function createRulesFromOptions(options = {}) {
   // Handle min_length
   rules.length = { minLength: minLength };
 
-  // Validate require_3of4_character_types prerequisite
+  // Validate '3 of 4' prerequisite
+  const require3of4 = characterTypeRule === "3of4";
   if (require3of4) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
@@ -98,7 +99,7 @@ function createRulesFromOptions(options = {}) {
 
     if (!hasAllFourTypes) {
       throw new Error(
-        `require_3of4_character_types can only be used when all four character types (${Object.values(
+        `'3of4' character_type_rule can only be used when all four character types (${Object.values(
           CHARACTER_TYPES
         ).join(", ")}) are selected`
       );

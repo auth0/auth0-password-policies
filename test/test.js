@@ -76,11 +76,32 @@ describe("password policies", function () {
       });
     });
 
-    describe("require_3of4_character_types", function () {
-      it("should enforce 3 out of 4 character types when all 4 types are specified", function () {
+    describe("character_type_rule", function () {
+      it("should enforce all specified character types by default", function () {
         const auth0Config = {
           character_types: ["lowercase", "uppercase", "number", "special"],
-          require_3of4_character_types: true,
+          identical_characters: "allow",
+          min_length: 3,
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toHaveProperty("length");
+        expect(rules.length).toEqual({ minLength: 3 });
+        expect(rules).toHaveProperty("contains");
+        expect(rules.contains).toHaveProperty("expressions");
+        expect(rules.contains.expressions).toHaveLength(4);
+        // Verify each expression has test and explain functions
+        rules.contains.expressions.forEach(function (expr) {
+          expect(expr).toHaveProperty("test");
+          expect(expr).toHaveProperty("explain");
+          expect(typeof expr.test).toBe("function");
+          expect(typeof expr.explain).toBe("function");
+        });
+      });
+
+      it("when set to '3of4', should enforce 3 out of 4 character types when all 4 types are specified", function () {
+        const auth0Config = {
+          character_types: ["lowercase", "uppercase", "number", "special"],
+          character_type_rule: "3of4",
           identical_characters: "allow",
           min_length: 3,
         };
@@ -100,15 +121,15 @@ describe("password policies", function () {
         });
       });
 
-      it("should throw an error when require_3of4_character_types is used without all 4 character types", function () {
+      it("when set to '3of4', should throw an error when all 4 character types are NOT specified", function () {
         expect(function () {
           const auth0Config = {
             character_types: ["lowercase", "uppercase"],
-            require_3of4_character_types: true,
+            character_type_rule: "3of4",
           };
           createRulesFromOptions(auth0Config);
         }).toThrow(
-          "require_3of4_character_types can only be used when all four character types (lowercase, uppercase, number, special) are selected"
+          "'3of4' character_type_rule can only be used when all four character types (lowercase, uppercase, number, special) are selected"
         );
       });
     });
@@ -149,9 +170,6 @@ describe("password policies", function () {
         expect(rules).toEqual({
           length: {
             minLength: 15,
-          },
-          identicalChars: {
-            max: 2,
           },
         });
       });
