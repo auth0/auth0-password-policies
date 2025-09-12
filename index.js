@@ -89,7 +89,7 @@ function createRulesFromOptions(options = {}) {
   rules.length = { minLength: minLength };
 
   // Validate '3 of 4' prerequisite
-  const require3of4 = characterTypeRule === "3_of_4";
+  const require3of4 = characterTypeRule === "three_of_four";
   if (require3of4) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
