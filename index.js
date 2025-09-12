@@ -46,7 +46,7 @@ const CHARACTER_TYPES = {
  * @typedef {Object} PasswordOptions
  * @property {number} [min_length=15] - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
- * @property {'all'|'3of4'} [character_type_rule='all'] - How many character types are required
+ * @property {'all'|'3_of_4'} [character_type_rule='all'] - How many character types are required
  * @property {'allow'|'disallow'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  */
 
@@ -89,7 +89,7 @@ function createRulesFromOptions(options = {}) {
   rules.length = { minLength: minLength };
 
   // Validate '3 of 4' prerequisite
-  const require3of4 = characterTypeRule === "3of4";
+  const require3of4 = characterTypeRule === "3_of_4";
   if (require3of4) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
@@ -99,7 +99,7 @@ function createRulesFromOptions(options = {}) {
 
     if (!hasAllFourTypes) {
       throw new Error(
-        `'3of4' character_type_rule can only be used when all four character types (${Object.values(
+        `'3_of_4' character_type_rule can only be used when all four character types (${Object.values(
           CHARACTER_TYPES
         ).join(", ")}) are selected`
       );

@@ -36,7 +36,7 @@ const { createRulesFromOptions } = require('auth0-password-policies');
 
 const passwordOptions = {
   character_types: ["uppercase","lowercase","number","special"],
-  "require_3of4_character_types": true,
+  character_type_rule: "3_of_4",
   identical_characters: "disallow"
 };
 
