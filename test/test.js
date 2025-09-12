@@ -98,7 +98,7 @@ describe("password policies", function () {
         });
       });
 
-      it("when set to '3_of_4', should enforce 3 out of 4 character types when all 4 types are specified", function () {
+      it("when set to 'three_of_four', should enforce 3 out of 4 character types when all 4 types are specified", function () {
         const auth0Config = {
           character_types: ["lowercase", "uppercase", "number", "special"],
           character_type_rule: "3_of_4",
