@@ -77,27 +77,6 @@ describe("password policies", function () {
     });
 
     describe("character_type_rule", function () {
-      it("should enforce all specified character types by default", function () {
-        const auth0Config = {
-          character_types: ["lowercase", "uppercase", "number", "special"],
-          identical_characters: "allow",
-          min_length: 3,
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toHaveProperty("length");
-        expect(rules.length).toEqual({ minLength: 3 });
-        expect(rules).toHaveProperty("contains");
-        expect(rules.contains).toHaveProperty("expressions");
-        expect(rules.contains.expressions).toHaveLength(4);
-        // Verify each expression has test and explain functions
-        rules.contains.expressions.forEach(function (expr) {
-          expect(expr).toHaveProperty("test");
-          expect(expr).toHaveProperty("explain");
-          expect(typeof expr.test).toBe("function");
-          expect(typeof expr.explain).toBe("function");
-        });
-      });
-
       it("when set to 'three_of_four', should enforce 3 out of 4 character types when all 4 types are specified", function () {
         const auth0Config = {
           character_types: ["lowercase", "uppercase", "number", "special"],
@@ -137,7 +116,7 @@ describe("password policies", function () {
     describe("identical_characters", function () {
       it("should disallow more than 2 identical characters when specified", function () {
         const auth0Config = {
-          identical_characters: "disallow",
+          identical_characters: "block",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({

@@ -47,7 +47,7 @@ const CHARACTER_TYPES = {
  * @property {number} [min_length=15] - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
  * @property {'all'|'3_of_4'} [character_type_rule='all'] - How many character types are required
- * @property {'allow'|'disallow'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
+ * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  */
 
 /**
@@ -136,7 +136,7 @@ function createRulesFromOptions(options = {}) {
     }
   }
 
-  if (identicalChars === "disallow") {
+  if (identicalChars === "block") {
     rules.identicalChars = { max: 2 };
   }
 
