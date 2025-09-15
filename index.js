@@ -46,7 +46,7 @@ const CHARACTER_TYPES = {
  * @typedef {Object} PasswordOptions
  * @property {number} [min_length=15] - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
- * @property {'all'|'3_of_4'} [character_type_rule='all'] - How many character types are required
+ * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
  * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  */
 
