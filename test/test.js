@@ -76,11 +76,11 @@ describe("password policies", function () {
       });
     });
 
-    describe("require_3of4_character_types", function () {
-      it("should enforce 3 out of 4 character types when all 4 types are specified", function () {
+    describe("character_type_rule", function () {
+      it("when set to 'three_of_four', should enforce 3 out of 4 character types when all 4 types are specified", function () {
         const auth0Config = {
           character_types: ["lowercase", "uppercase", "number", "special"],
-          require_3of4_character_types: true,
+          character_type_rule: "three_of_four",
           identical_characters: "allow",
           min_length: 3,
         };
@@ -100,15 +100,15 @@ describe("password policies", function () {
         });
       });
 
-      it("should throw an error when require_3of4_character_types is used without all 4 character types", function () {
+      it("when set to 'three_of_four', should throw an error when all 4 character types are NOT specified", function () {
         expect(function () {
           const auth0Config = {
             character_types: ["lowercase", "uppercase"],
-            require_3of4_character_types: true,
+            character_type_rule: "three_of_four",
           };
           createRulesFromOptions(auth0Config);
         }).toThrow(
-          "require_3of4_character_types can only be used when all four character types (lowercase, uppercase, number, special) are selected"
+          "'three_of_four' character_type_rule can only be used when all four character types (lowercase, uppercase, number, special) are selected"
         );
       });
     });
@@ -116,7 +116,7 @@ describe("password policies", function () {
     describe("identical_characters", function () {
       it("should disallow more than 2 identical characters when specified", function () {
         const auth0Config = {
-          identical_characters: "disallow",
+          identical_characters: "block",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
@@ -149,9 +149,6 @@ describe("password policies", function () {
         expect(rules).toEqual({
           length: {
             minLength: 15,
-          },
-          identicalChars: {
-            max: 2,
           },
         });
       });
