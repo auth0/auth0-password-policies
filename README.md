@@ -37,7 +37,8 @@ const { createRulesFromOptions } = require('auth0-password-policies');
 const passwordOptions = {
   character_types: ["uppercase","lowercase","number","special"],
   character_type_rule: "three_of_four",
-  identical_characters: "block"
+  identical_characters: "block",
+  sequential_characters: "block"
 };
 
 const rules = createRulesFromOptions(passwordOptions);
@@ -52,6 +53,7 @@ console.log(customPolicy.toString());
 *   * numbers (i.e. 0-9)
 *   * special characters (e.g. !@#$%^&*)
 * * No more than 2 identical characters in a row (e.g., "aaa" not allowed)
+* * No more than 2 sequential alphanumeric characters (e.g., "abc" not allowed)
 */
 ```
 
