@@ -48,6 +48,7 @@ const CHARACTER_TYPES = {
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
  * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
  * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
+ * @property {'allow'|'block'} [sequential_characters='allow'] - Whether to allow sequential_characters (increasing or decreasing) alphanumeric characters.
  */
 
 /**
@@ -60,6 +61,7 @@ const DEFAULT_PASSWORD_OPTIONS = {
   character_types: [],
   character_type_rule: "all",
   identical_characters: "allow",
+  sequential_characters: "allow",
 };
 
 /**
@@ -78,6 +80,7 @@ function createRulesFromOptions(options = {}) {
     character_types: requiredTypes,
     character_type_rule: characterTypeRule,
     identical_characters: identicalChars,
+    sequential_characters: sequentialChars,
   } = { ...DEFAULT_PASSWORD_OPTIONS, ...options };
 
   // Validate min_length is within acceptable range
@@ -138,6 +141,10 @@ function createRulesFromOptions(options = {}) {
 
   if (identicalChars === "block") {
     rules.identicalChars = { max: 2 };
+  }
+
+  if (sequentialChars === "block") {
+    rules.sequentialChars = { max: 2 }
   }
 
   return rules;
