@@ -49,6 +49,7 @@ const CHARACTER_TYPES = {
  * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
  * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  * @property {'allow'|'block'} [sequential_characters='allow'] - Whether to allow sequential_characters (increasing or decreasing) alphanumeric characters.
+ * @property {'truncate'|'error'} [max_length_exceeded='error'] - Behavior when password exceeds max length of 72 bytes
  */
 
 /**
@@ -62,6 +63,7 @@ const DEFAULT_PASSWORD_OPTIONS = {
   character_type_rule: "all",
   identical_characters: "allow",
   sequential_characters: "allow",
+  max_length_exceeded: "error"
 };
 
 /**
@@ -81,6 +83,7 @@ function createRulesFromOptions(options = {}) {
     character_type_rule: characterTypeRule,
     identical_characters: identicalChars,
     sequential_characters: sequentialChars,
+    max_length_exceeded: maxLength
   } = { ...DEFAULT_PASSWORD_OPTIONS, ...options };
 
   // Validate min_length is within acceptable range
@@ -145,6 +148,10 @@ function createRulesFromOptions(options = {}) {
 
   if (sequentialChars === "block") {
     rules.sequentialChars = { max: 2 }
+  }
+  
+  if (maxLength === "error") {
+    rules.maxLength = { maxBytes: 72 };
   }
 
   return rules;

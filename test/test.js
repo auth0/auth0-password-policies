@@ -24,6 +24,7 @@ describe("password policies", function () {
         const auth0Config1 = {
           min_length: 1,
           identical_characters: "allow",
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config1);
         expect(rules).toEqual({
@@ -35,6 +36,7 @@ describe("password policies", function () {
         const auth0Config72 = {
           min_length: 72,
           identical_characters: "allow",
+          max_length_exceeded: "truncate",
         };
         const rules72 = createRulesFromOptions(auth0Config72);
         expect(rules72).toEqual({
@@ -60,6 +62,7 @@ describe("password policies", function () {
           character_types: ["lowercase", "uppercase", "number", "special"],
           identical_characters: "allow",
           min_length: 4,
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toHaveProperty("length");
@@ -84,6 +87,7 @@ describe("password policies", function () {
           character_type_rule: "three_of_four",
           identical_characters: "allow",
           min_length: 3,
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toHaveProperty("length");
@@ -106,6 +110,7 @@ describe("password policies", function () {
           const auth0Config = {
             character_types: ["lowercase", "uppercase"],
             character_type_rule: "three_of_four",
+            max_length_exceeded: "error",
           };
           createRulesFromOptions(auth0Config);
         }).toThrow(
@@ -118,6 +123,7 @@ describe("password policies", function () {
       it("should disallow more than 2 identical characters when specified", function () {
         const auth0Config = {
           identical_characters: "block",
+          max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
@@ -127,12 +133,48 @@ describe("password policies", function () {
           identicalChars: {
             max: 2,
           },
+          maxLength: {
+            maxBytes: 72,
+          },
         });
       });
 
       it("should allow more than 2 identical characters when specified", function () {
         const auth0Config = {
           identical_characters: "allow",
+          max_length_exceeded: "error",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 15,
+          },
+          maxLength: {
+            maxBytes: 72,
+          },
+        });
+      });
+    });
+
+    describe("max_length_exceeded", function () {
+      it("should disallow more than 72 bytes when creating password if max_length_exceeded is set to error", function () {
+        const auth0Config = {
+          max_length_exceeded: "error",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 15,
+          },
+          maxLength: {
+            maxBytes: 72,
+          },
+        });
+      });
+
+      it("should not set a maxLength on rules when max_length_exceeded is set to truncate", function () {
+        const auth0Config = {
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
@@ -170,32 +212,6 @@ describe("password policies", function () {
           },
         });
       });
-    });
-
-    describe("default values", function () {
-      it("should apply default values when not specified", function () {
-        const auth0Config = {};
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toEqual({
-          length: {
-            minLength: 15,
-          },
-        });
-      });
-
-      it("should allow overriding default values", function () {
-        const auth0Config = {
-          min_length: 5,
-          identical_characters: "allow",
-          sequential_characters: "allow",
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toEqual({
-          length: {
-            minLength: 5,
-          },
-        });
-      });
 
       it("should correctly validate a password when sequential_characters is set to allow", function () {
         const auth0Config = {
@@ -218,6 +234,36 @@ describe("password policies", function () {
         const result = policy.check("abcde");
         
         expect(result).toBe(false);
+      });
+    });
+
+    describe("default values", function () {
+      it("should apply default values when not specified", function () {
+        const auth0Config = {};
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 15,
+          },
+          maxLength: {
+            maxBytes: 72,
+          },
+        });
+      });
+
+      it("should allow overriding default values", function () {
+        const auth0Config = {
+          min_length: 5,
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 5,
+          },
+        });
       });
     });
   });
