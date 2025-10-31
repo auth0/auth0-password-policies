@@ -12,6 +12,6 @@
     "jest": "^29.0.0"
   },
   "dependencies": {
-    "password-sheriff": "^1.1.0"
+    "password-sheriff": "^1.2.0"
   }
 }
