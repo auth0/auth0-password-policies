@@ -49,7 +49,7 @@ const CHARACTER_TYPES = {
  * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
  * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
  * @property {'allow'|'block'} [sequential_characters='allow'] - Whether to allow sequential_characters (increasing or decreasing) alphanumeric characters.
- * @property {'truncate'|'error'} [max_length_exceeded='error'] - Behavior when password exceeds max length of 72 bytes
+ * @property {'error'|'truncate'} [max_length_exceeded='error'] - Behavior when password exceeds max length of 72 bytes
  */
 
 /**
