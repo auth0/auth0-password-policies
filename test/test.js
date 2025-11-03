@@ -1,5 +1,6 @@
 const policies = require("..");
 const { createRulesFromOptions } = policies;
+const {PasswordPolicy} = require("password-sheriff")
 
 describe("password policies", function () {
   describe("main export", function () {
@@ -194,6 +195,29 @@ describe("password policies", function () {
             minLength: 5,
           },
         });
+      });
+
+      it("should correctly validate a password when sequential_characters is set to allow", function () {
+        const auth0Config = {
+          min_length: 2,
+          sequential_characters: "allow",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const result = policy.check("abcde");
+        expect(result).toBe(true);
+      });
+
+      it("should correctly validate a password when sequential_characters is set to block", function () {
+        const auth0Config = {
+          min_length: 2,
+          sequential_characters: "block",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const result = policy.check("abcde");
+        
+        expect(result).toBe(false);
       });
     });
   });
