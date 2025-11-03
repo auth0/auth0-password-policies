@@ -1,6 +1,6 @@
 const policies = require("..");
 const { createRulesFromOptions } = policies;
-const {PasswordPolicy} = require("password-sheriff")
+const { PasswordPolicy } = require("password-sheriff");
 
 describe("password policies", function () {
   describe("main export", function () {
@@ -156,6 +156,64 @@ describe("password policies", function () {
       });
     });
 
+    describe("sequential_characters", function () {
+      it("should disallow more than 2 sequential characters when specified (set to block)", function () {
+        const auth0Config = {
+          sequential_characters: "block",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 15,
+          },
+          sequentialChars: {
+            max: 2,
+          },
+          maxLength: {
+            maxBytes: 72,
+          },
+        });
+      });
+
+      it("should allow more than 2 sequential characters when specified (set to allow)", function () {
+        const auth0Config = {
+          sequential_characters: "allow",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 15,
+          },
+          maxLength: {
+            maxBytes: 72,
+          },
+        });
+      });
+
+      it("should correctly validate a password when sequential_characters is set to allow", function () {
+        const auth0Config = {
+          min_length: 2,
+          sequential_characters: "allow",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const result = policy.check("abcde");
+        expect(result).toBe(true);
+      });
+
+      it("should correctly validate a password when sequential_characters is set to block", function () {
+        const auth0Config = {
+          min_length: 2,
+          sequential_characters: "block",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const result = policy.check("abcde");
+
+        expect(result).toBe(false);
+      });
+    });
+
     describe("max_length_exceeded", function () {
       it("should disallow more than 72 bytes when creating password if max_length_exceeded is set to error", function () {
         const auth0Config = {
@@ -182,58 +240,6 @@ describe("password policies", function () {
             minLength: 15,
           },
         });
-      });
-    });
-
-    describe("sequential_characters", function () {
-      it("should disallow more than 2 sequential characters when specified (set to block)", function () {
-        const auth0Config = {
-          sequential_characters: "block",
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toEqual({
-          length: {
-            minLength: 15,
-          },
-          sequentialChars: {
-            max: 2,
-          },
-        });
-      });
-
-      it("should allow more than 2 sequential characters when specified (set to allow)", function () {
-        const auth0Config = {
-          sequential_characters: "allow",
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toEqual({
-          length: {
-            minLength: 15,
-          },
-        });
-      });
-
-      it("should correctly validate a password when sequential_characters is set to allow", function () {
-        const auth0Config = {
-          min_length: 2,
-          sequential_characters: "allow",
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        const policy = new PasswordPolicy(rules);
-        const result = policy.check("abcde");
-        expect(result).toBe(true);
-      });
-
-      it("should correctly validate a password when sequential_characters is set to block", function () {
-        const auth0Config = {
-          min_length: 2,
-          sequential_characters: "block",
-        };
-        const rules = createRulesFromOptions(auth0Config);
-        const policy = new PasswordPolicy(rules);
-        const result = policy.check("abcde");
-        
-        expect(result).toBe(false);
       });
     });
 
