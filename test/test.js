@@ -241,6 +241,30 @@ describe("password policies", function () {
           },
         });
       });
+
+      it("should correctly validate a password when max_length_exceeded is set to error", function () {
+        const auth0Config = {
+          min_length: 2,
+          max_length_exceeded: "error",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const password = "a".repeat(100);
+        const result = policy.check(password);
+        expect(result).toBe(false);
+      });
+
+      it("should correctly validate a password when max_length_exceeded is set to truncate", function () {
+        const auth0Config = {
+          min_length: 2,
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        const policy = new PasswordPolicy(rules);
+        const password = "a".repeat(100);
+        const result = policy.check(password);
+        expect(result).toBe(true);
+      });
     });
 
     describe("default values", function () {
