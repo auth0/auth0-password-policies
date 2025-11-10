@@ -38,7 +38,8 @@ const passwordOptions = {
   character_types: ["uppercase","lowercase","number","special"],
   character_type_rule: "three_of_four",
   identical_characters: "block",
-  sequential_characters: "block"
+  sequential_characters: "block",
+  max_length_exceeded: "error"
 };
 
 const rules = createRulesFromOptions(passwordOptions);
@@ -54,6 +55,7 @@ console.log(customPolicy.toString());
 *   * special characters (e.g. !@#$%^&*)
 * * No more than 2 identical characters in a row (e.g., "aaa" not allowed)
 * * No more than 2 sequential alphanumeric characters (e.g., "abc" not allowed)
+* * Maximum password length exceeded
 */
 ```
 
