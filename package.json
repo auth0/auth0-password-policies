@@ -1,6 +1,6 @@
 {
   "name": "auth0-password-policies",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "index.js",
   "repository": "git@github.com:auth0/auth0-password-policies.git",
   "author": "Shaun Starsprung <shaun.starsprung@auth0.com>",
