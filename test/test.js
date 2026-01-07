@@ -23,7 +23,9 @@ describe("password policies", function () {
       it("should test min_length from 1 to 72", function () {
         const auth0Config1 = {
           min_length: 1,
+          character_types: [],
           identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config1);
@@ -35,7 +37,9 @@ describe("password policies", function () {
 
         const auth0Config72 = {
           min_length: 72,
+          character_types: [],
           identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules72 = createRulesFromOptions(auth0Config72);
@@ -59,9 +63,10 @@ describe("password policies", function () {
     describe("character_types", function () {
       it("should enforce required character types", function () {
         const auth0Config = {
+          min_length: 4,
           character_types: ["lowercase", "uppercase", "number", "special"],
           identical_characters: "allow",
-          min_length: 4,
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
@@ -83,10 +88,11 @@ describe("password policies", function () {
     describe("character_type_rule", function () {
       it("when set to 'three_of_four', should enforce 3 out of 4 character types when all 4 types are specified", function () {
         const auth0Config = {
+          min_length: 3,
           character_types: ["lowercase", "uppercase", "number", "special"],
           character_type_rule: "three_of_four",
           identical_characters: "allow",
-          min_length: 3,
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
@@ -108,8 +114,11 @@ describe("password policies", function () {
       it("when set to 'three_of_four', should throw an error when all 4 character types are NOT specified", function () {
         expect(function () {
           const auth0Config = {
+            min_length: 8,
             character_types: ["lowercase", "uppercase"],
             character_type_rule: "three_of_four",
+            identical_characters: "allow",
+            sequential_characters: "allow",
             max_length_exceeded: "error",
           };
           createRulesFromOptions(auth0Config);
@@ -122,13 +131,16 @@ describe("password policies", function () {
     describe("identical_characters", function () {
       it("should disallow more than 2 identical characters when specified", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
           identical_characters: "block",
+          sequential_characters: "allow",
           max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
           identicalChars: {
             max: 2,
@@ -141,13 +153,16 @@ describe("password policies", function () {
 
       it("should allow more than 2 identical characters when specified", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
           identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
           maxLength: {
             maxBytes: 72,
@@ -159,12 +174,16 @@ describe("password policies", function () {
     describe("sequential_characters", function () {
       it("should disallow more than 2 sequential characters when specified (set to block)", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
+          identical_characters: "allow",
           sequential_characters: "block",
+          max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
           sequentialChars: {
             max: 2,
@@ -177,12 +196,16 @@ describe("password policies", function () {
 
       it("should allow more than 2 sequential characters when specified (set to allow)", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
+          identical_characters: "allow",
           sequential_characters: "allow",
+          max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
           maxLength: {
             maxBytes: 72,
@@ -193,7 +216,10 @@ describe("password policies", function () {
       it("should correctly validate a password when sequential_characters is set to allow", function () {
         const auth0Config = {
           min_length: 2,
+          character_types: [],
+          identical_characters: "allow",
           sequential_characters: "allow",
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         const policy = new PasswordPolicy(rules);
@@ -204,7 +230,10 @@ describe("password policies", function () {
       it("should correctly validate a password when sequential_characters is set to block", function () {
         const auth0Config = {
           min_length: 2,
+          character_types: [],
+          identical_characters: "allow",
           sequential_characters: "block",
+          max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         const policy = new PasswordPolicy(rules);
@@ -217,12 +246,16 @@ describe("password policies", function () {
     describe("max_length_exceeded", function () {
       it("should disallow more than 72 bytes when creating password if max_length_exceeded is set to error", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
           maxLength: {
             maxBytes: 72,
@@ -232,12 +265,16 @@ describe("password policies", function () {
 
       it("should not set a maxLength on rules when max_length_exceeded is set to truncate", function () {
         const auth0Config = {
+          min_length: 8,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
         expect(rules).toEqual({
           length: {
-            minLength: 15,
+            minLength: 8,
           },
         });
       });
@@ -245,6 +282,9 @@ describe("password policies", function () {
       it("should correctly validate a password when max_length_exceeded is set to error", function () {
         const auth0Config = {
           min_length: 2,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "error",
         };
         const rules = createRulesFromOptions(auth0Config);
@@ -257,6 +297,9 @@ describe("password policies", function () {
       it("should correctly validate a password when max_length_exceeded is set to truncate", function () {
         const auth0Config = {
           min_length: 2,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
           max_length_exceeded: "truncate",
         };
         const rules = createRulesFromOptions(auth0Config);
@@ -267,23 +310,18 @@ describe("password policies", function () {
       });
     });
 
-    describe("default values", function () {
-      it("should apply default values when not specified", function () {
-        const auth0Config = {};
-        const rules = createRulesFromOptions(auth0Config);
-        expect(rules).toEqual({
-          length: {
-            minLength: 15,
-          },
-          maxLength: {
-            maxBytes: 72,
-          },
-        });
+    describe("validation", function () {
+      it("should throw an error when options parameter is missing required properties", function () {
+        expect(function () {
+          const auth0Config = {};
+          createRulesFromOptions(auth0Config);
+        }).toThrow();
       });
 
-      it("should allow overriding default values", function () {
+      it("should accept valid configuration with all required properties", function () {
         const auth0Config = {
           min_length: 5,
+          character_types: [],
           identical_characters: "allow",
           sequential_characters: "allow",
           max_length_exceeded: "truncate",
