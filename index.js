@@ -46,17 +46,20 @@ const CHARACTER_TYPES = {
  * @typedef {Object} PasswordComplexityOptions
  * @property {number} min_length - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} character_types - Required character types
- * @property {boolean} require_3of4_character_types - Whether to require 3 of 4 character types
- * @property {'allow'|'disallow'} identical_characters - Whether to allow >2 identical consecutive characters
- * @property {'allow'|'disallow'} sequential_characters - Whether to allow sequential alphanumeric characters
- * @property {'allow'|'disallow'} truncate - Whether to allow truncation (disallow = enforce 72 byte max)
+ * @property {boolean} [require_3of4_character_types] - (New format) Whether to require 3 of 4 character types
+ * @property {'all'|'three_of_four'} [character_type_rule] - (Old format) How many character types are required
+ * @property {'allow'|'disallow'|'block'} identical_characters - Whether to allow >2 identical consecutive characters
+ * @property {'allow'|'disallow'|'block'} sequential_characters - Whether to allow sequential alphanumeric characters
+ * @property {'allow'|'disallow'} [truncate] - (New format) Whether to allow truncation (disallow = enforce 72 byte max)
+ * @property {'error'|'truncate'} [max_length_exceeded] - (Old format) Behavior when password exceeds max length of 72 bytes
  */
 
 /**
  * Creates a PasswordPolicy rules configuration from an Auth0
- * `connection.options.password_options.complexity` object (PasswordComplexity type).
+ * `connection.options.password_options.complexity` object.
+ * Supports both old API format and new PasswordComplexity class format.
  *
- * @param {PasswordComplexityOptions} options - Auth0 PasswordComplexity object
+ * @param {PasswordComplexityOptions} options - Auth0 password complexity configuration
  * @returns {Object} password-sheriff rules configuration object that can be passed to PasswordPolicy constructor
  */
 function createRulesFromOptions(options) {
@@ -69,11 +72,16 @@ function createRulesFromOptions(options) {
   const {
     min_length: minLength,
     character_types: requiredTypes,
-    require_3of4_character_types: require3of4,
+    require_3of4_character_types: require3of4New,
+    character_type_rule: characterTypeRule,
     identical_characters: identicalChars,
     sequential_characters: sequentialChars,
-    truncate: truncateOption
+    truncate: truncateOption,
+    max_length_exceeded: maxLengthExceeded
   } = options;
+
+  // Support both old and new format for 3-of-4 requirement
+  const require3of4 = require3of4New === true || characterTypeRule === "three_of_four";
 
   // Validate min_length is within acceptable range
   if (minLength < 1 || minLength > 72) {
@@ -93,9 +101,9 @@ function createRulesFromOptions(options) {
 
     if (!hasAllFourTypes) {
       throw new Error(
-        `'require_3of4_character_types' can only be true when all four character types (${Object.values(
+        `'three_of_four' character_type_rule can only be used when all four character types (${Object.values(
           CHARACTER_TYPES
-        ).join(", ")}) are specified`
+        ).join(", ")}) are selected`
       );
     }
   }
@@ -130,15 +138,18 @@ function createRulesFromOptions(options) {
     }
   }
 
-  if (identicalChars === "disallow") {
+  // Support both old format ('block') and new format ('disallow')
+  if (identicalChars === "disallow" || identicalChars === "block") {
     rules.identicalChars = { max: 2 };
   }
 
-  if (sequentialChars === "disallow") {
+  // Support both old format ('block') and new format ('disallow')
+  if (sequentialChars === "disallow" || sequentialChars === "block") {
     rules.sequentialChars = { max: 2 }
   }
   
-  if (truncateOption === "disallow") {
+  // Support both old format (max_length_exceeded: 'error') and new format (truncate: 'disallow')
+  if (truncateOption === "disallow" || maxLengthExceeded === "error") {
     rules.maxLength = { maxBytes: 72 };
   }
 
