@@ -43,48 +43,37 @@ const CHARACTER_TYPES = {
 };
 
 /**
- * @typedef {Object} PasswordOptions
- * @property {number} [min_length=15] - Minimum password length (1-72)
- * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
- * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
- * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
- * @property {'allow'|'block'} [sequential_characters='allow'] - Whether to allow sequential_characters (increasing or decreasing) alphanumeric characters.
- * @property {'error'|'truncate'} [max_length_exceeded='error'] - Behavior when password exceeds max length of 72 bytes
+ * @typedef {Object} PasswordComplexityOptions
+ * @property {number} min_length - Minimum password length (1-72)
+ * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} character_types - Required character types
+ * @property {boolean} require_3of4_character_types - Whether to require 3 of 4 character types
+ * @property {'allow'|'disallow'} identical_characters - Whether to allow >2 identical consecutive characters
+ * @property {'allow'|'disallow'} sequential_characters - Whether to allow sequential alphanumeric characters
+ * @property {'allow'|'disallow'} truncate - Whether to allow truncation (disallow = enforce 72 byte max)
  */
-
-/**
- * Default values for password options
- * @constant
- * @type {PasswordOptions}
- */
-const DEFAULT_PASSWORD_OPTIONS = {
-  min_length: 15,
-  character_types: [],
-  character_type_rule: "all",
-  identical_characters: "allow",
-  sequential_characters: "allow",
-  max_length_exceeded: "error"
-};
 
 /**
  * Creates a PasswordPolicy rules configuration from an Auth0
- * `connection.options.password_options.complexity` object.
+ * `connection.options.password_options.complexity` object (PasswordComplexity type).
  *
- * @param {PasswordOptions} options - Auth0 password_options.complexity object
+ * @param {PasswordComplexityOptions} options - Auth0 PasswordComplexity object
  * @returns {Object} password-sheriff rules configuration object that can be passed to PasswordPolicy constructor
  */
-function createRulesFromOptions(options = {}) {
+function createRulesFromOptions(options) {
+  if (!options || typeof options !== 'object') {
+    throw new Error("options must be a PasswordComplexity object");
+  }
+
   const rules = {};
 
-  // Apply defaults
   const {
     min_length: minLength,
     character_types: requiredTypes,
-    character_type_rule: characterTypeRule,
+    require_3of4_character_types: require3of4,
     identical_characters: identicalChars,
     sequential_characters: sequentialChars,
-    max_length_exceeded: maxLength
-  } = { ...DEFAULT_PASSWORD_OPTIONS, ...options };
+    truncate: truncateOption
+  } = options;
 
   // Validate min_length is within acceptable range
   if (minLength < 1 || minLength > 72) {
@@ -95,7 +84,6 @@ function createRulesFromOptions(options = {}) {
   rules.length = { minLength: minLength };
 
   // Validate '3 of 4' prerequisite
-  const require3of4 = characterTypeRule === "three_of_four";
   if (require3of4) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
@@ -105,9 +93,9 @@ function createRulesFromOptions(options = {}) {
 
     if (!hasAllFourTypes) {
       throw new Error(
-        `'three_of_four' character_type_rule can only be used when all four character types (${Object.values(
+        `'require_3of4_character_types' can only be true when all four character types (${Object.values(
           CHARACTER_TYPES
-        ).join(", ")}) are selected`
+        ).join(", ")}) are specified`
       );
     }
   }
@@ -142,15 +130,15 @@ function createRulesFromOptions(options = {}) {
     }
   }
 
-  if (identicalChars === "block") {
+  if (identicalChars === "disallow") {
     rules.identicalChars = { max: 2 };
   }
 
-  if (sequentialChars === "block") {
+  if (sequentialChars === "disallow") {
     rules.sequentialChars = { max: 2 }
   }
   
-  if (maxLength === "error") {
+  if (truncateOption === "disallow") {
     rules.maxLength = { maxBytes: 72 };
   }
 
