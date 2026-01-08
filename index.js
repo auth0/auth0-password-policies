@@ -43,48 +43,39 @@ const CHARACTER_TYPES = {
 };
 
 /**
- * @typedef {Object} PasswordOptions
- * @property {number} [min_length=15] - Minimum password length (1-72)
- * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} [character_types=[]] - Required character types
- * @property {'all'|'three_of_four'} [character_type_rule='all'] - How many character types are required
- * @property {'allow'|'block'} [identical_characters='allow'] - Whether to allow >2 identical consecutive characters
- * @property {'allow'|'block'} [sequential_characters='allow'] - Whether to allow sequential_characters (increasing or decreasing) alphanumeric characters.
- * @property {'error'|'truncate'} [max_length_exceeded='error'] - Behavior when password exceeds max length of 72 bytes
+ * @typedef {Object} PasswordComplexityOptions
+ * @property {number} min_length - Minimum password length (1-72)
+ * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} character_types - Required character types
+ * @property {'all'|'three_of_four'} character_type_rule - How many character types are required
+ * @property {'allow'|'block'} identical_characters - Whether to allow >2 identical consecutive characters
+ * @property {'allow'|'block'} sequential_characters - Whether to allow sequential alphanumeric characters
+ * @property {'error'|'truncate'} max_length_exceeded - Behavior when password exceeds max length of 72 bytes
  */
-
-/**
- * Default values for password options
- * @constant
- * @type {PasswordOptions}
- */
-const DEFAULT_PASSWORD_OPTIONS = {
-  min_length: 15,
-  character_types: [],
-  character_type_rule: "all",
-  identical_characters: "allow",
-  sequential_characters: "allow",
-  max_length_exceeded: "error"
-};
 
 /**
  * Creates a PasswordPolicy rules configuration from an Auth0
  * `connection.options.password_options.complexity` object.
  *
- * @param {PasswordOptions} options - Auth0 password_options.complexity object
+ * @param {PasswordComplexityOptions} options - Auth0 password complexity configuration
  * @returns {Object} password-sheriff rules configuration object that can be passed to PasswordPolicy constructor
  */
-function createRulesFromOptions(options = {}) {
+function createRulesFromOptions(options) {
+  if (!options || typeof options !== 'object') {
+    throw new Error("options must be a PasswordComplexity object");
+  }
+
   const rules = {};
 
-  // Apply defaults
   const {
     min_length: minLength,
     character_types: requiredTypes,
     character_type_rule: characterTypeRule,
     identical_characters: identicalChars,
     sequential_characters: sequentialChars,
-    max_length_exceeded: maxLength
-  } = { ...DEFAULT_PASSWORD_OPTIONS, ...options };
+    max_length_exceeded: maxLengthExceeded
+  } = options;
+
+  const require3of4 = characterTypeRule === "three_of_four";
 
   // Validate min_length is within acceptable range
   if (minLength < 1 || minLength > 72) {
@@ -95,7 +86,6 @@ function createRulesFromOptions(options = {}) {
   rules.length = { minLength: minLength };
 
   // Validate '3 of 4' prerequisite
-  const require3of4 = characterTypeRule === "three_of_four";
   if (require3of4) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
@@ -150,7 +140,7 @@ function createRulesFromOptions(options = {}) {
     rules.sequentialChars = { max: 2 }
   }
   
-  if (maxLength === "error") {
+  if (maxLengthExceeded === "error") {
     rules.maxLength = { maxBytes: 72 };
   }
 
