@@ -46,10 +46,10 @@ const CHARACTER_TYPES = {
  * @typedef {Object} PasswordComplexityOptions
  * @property {number} min_length - Minimum password length (1-72)
  * @property {Array<'uppercase'|'lowercase'|'number'|'special'>} character_types - Required character types
- * @property {'all'|'three_of_four'} [character_type_rule] - How many character types are required
+ * @property {'all'|'three_of_four'} character_type_rule - How many character types are required
  * @property {'allow'|'block'} identical_characters - Whether to allow >2 identical consecutive characters
  * @property {'allow'|'block'} sequential_characters - Whether to allow sequential alphanumeric characters
- * @property {'error'|'truncate'} [max_length_exceeded] - Behavior when password exceeds max length of 72 bytes
+ * @property {'error'|'truncate'} max_length_exceeded - Behavior when password exceeds max length of 72 bytes
  */
 
 /**
