@@ -58,6 +58,18 @@ describe("password policies", function () {
           createRulesFromOptions(auth0Config);
         }).toThrow("min_length must be between 1 and 72");
       });
+
+      it("should throw an error when min_length is undefined", function () {
+        expect(function () {
+          const auth0Config = {
+            character_types: [],
+            identical_characters: "allow",
+            sequential_characters: "allow",
+            max_length_exceeded: "truncate",
+          };
+          createRulesFromOptions(auth0Config);
+        }).toThrow("min_length must be between 1 and 72");
+      });
     });
 
     describe("character_types", function () {
@@ -82,6 +94,23 @@ describe("password policies", function () {
           expect(typeof expr.test).toBe("function");
           expect(typeof expr.explain).toBe("function");
         });
+      });
+
+      it("should handle undefined character_types", function () {
+        const auth0Config = {
+          min_length: 8,
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 8,
+          },
+        });
+        expect(rules).not.toHaveProperty("contains");
+        expect(rules).not.toHaveProperty("containsAtLeast");
       });
     });
 

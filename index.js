@@ -78,7 +78,7 @@ function createRulesFromOptions(options) {
   const require3of4 = characterTypeRule === "three_of_four";
 
   // Validate min_length is within acceptable range
-  if (minLength < 1 || minLength > 72) {
+  if (minLength == null || typeof minLength !== 'number' || minLength < 1 || minLength > 72) {
     throw new Error("min_length must be between 1 and 72");
   }
 
@@ -90,7 +90,7 @@ function createRulesFromOptions(options) {
     const hasAllFourTypes = Object.values(CHARACTER_TYPES).every(function (
       type
     ) {
-      return requiredTypes.includes(type);
+      return requiredTypes?.includes(type);
     });
 
     if (!hasAllFourTypes) {
@@ -102,7 +102,7 @@ function createRulesFromOptions(options) {
     }
   }
 
-  if (requiredTypes.length > 0 || require3of4) {
+  if (requiredTypes?.length > 0 || require3of4) {
     const expressions = [];
 
     if (require3of4) {
@@ -113,16 +113,16 @@ function createRulesFromOptions(options) {
       };
     } else {
       // Map character types to expressions
-      if (requiredTypes.includes(CHARACTER_TYPES.LOWERCASE)) {
+      if (requiredTypes?.includes(CHARACTER_TYPES.LOWERCASE)) {
         expressions.push(lowerCase);
       }
-      if (requiredTypes.includes(CHARACTER_TYPES.UPPERCASE)) {
+      if (requiredTypes?.includes(CHARACTER_TYPES.UPPERCASE)) {
         expressions.push(upperCase);
       }
-      if (requiredTypes.includes(CHARACTER_TYPES.NUMBER)) {
+      if (requiredTypes?.includes(CHARACTER_TYPES.NUMBER)) {
         expressions.push(numbers);
       }
-      if (requiredTypes.includes(CHARACTER_TYPES.SPECIAL)) {
+      if (requiredTypes?.includes(CHARACTER_TYPES.SPECIAL)) {
         expressions.push(specialCharacters);
       }
 
