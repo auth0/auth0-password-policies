@@ -69,6 +69,18 @@ describe("password policies", function () {
         const rules = createRulesFromOptions(auth0Config);
         expect(rules.length).toBeUndefined();
       });
+
+      it("should not set length rule when min_length is null", function () {
+        const auth0Config = {
+          min_length: null,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules.length).toBeUndefined();
+      });
     });
 
     describe("character_types", function () {

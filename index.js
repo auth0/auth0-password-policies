@@ -77,13 +77,13 @@ function createRulesFromOptions(options) {
 
   const require3of4 = characterTypeRule === "three_of_four";
 
-  // Validate min_length is within acceptable range (if provided)
-  if (minLength != null && (typeof minLength !== 'number' || minLength < 1 || minLength > 72)) {
-    throw new Error("min_length must be between 1 and 72");
-  }
+  if (minLength !== undefined && minLength !== null) {
+    // Validate min_length is within acceptable range (if provided)
+    if (typeof minLength !== 'number' || minLength < 1 || minLength > 72) {
+      throw new Error("min_length must be between 1 and 72");
+    }
 
-  // Handle min_length (if provided)
-  if (minLength != null) {
+    // Handle min_length (if provided)
     rules.length = { minLength: minLength };
   }
 
