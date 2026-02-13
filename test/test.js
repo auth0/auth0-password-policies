@@ -58,6 +58,29 @@ describe("password policies", function () {
           createRulesFromOptions(auth0Config);
         }).toThrow("min_length must be between 1 and 72");
       });
+
+      it("should not set length rule when min_length is undefined", function () {
+        const auth0Config = {
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules.length).toBeUndefined();
+      });
+
+      it("should not set length rule when min_length is null", function () {
+        const auth0Config = {
+          min_length: null,
+          character_types: [],
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules.length).toBeUndefined();
+      });
     });
 
     describe("character_types", function () {
@@ -82,6 +105,23 @@ describe("password policies", function () {
           expect(typeof expr.test).toBe("function");
           expect(typeof expr.explain).toBe("function");
         });
+      });
+
+      it("should handle undefined character_types", function () {
+        const auth0Config = {
+          min_length: 8,
+          identical_characters: "allow",
+          sequential_characters: "allow",
+          max_length_exceeded: "truncate",
+        };
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({
+          length: {
+            minLength: 8,
+          },
+        });
+        expect(rules).not.toHaveProperty("contains");
+        expect(rules).not.toHaveProperty("containsAtLeast");
       });
     });
 
@@ -311,14 +351,20 @@ describe("password policies", function () {
     });
 
     describe("validation", function () {
-      it("should throw an error when options parameter is missing required properties", function () {
+      it("should throw an error when options parameter is undefined", function () {
         expect(function () {
-          const auth0Config = {};
+          const auth0Config = undefined;
           createRulesFromOptions(auth0Config);
         }).toThrow();
       });
 
-      it("should accept valid configuration with all required properties", function () {
+      it("should accept valid configuration with empty options", function () {
+        const auth0Config = {};
+        const rules = createRulesFromOptions(auth0Config);
+        expect(rules).toEqual({});
+      });
+
+      it("should accept valid configuration with all properties", function () {
         const auth0Config = {
           min_length: 5,
           character_types: [],
