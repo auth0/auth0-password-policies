@@ -68,9 +68,9 @@ jobs:
           fi
 
       - name: Setup Node
-        uses: actions/setup-node@5e2628c959b9ade56971c0afcebbe5332d44b398 # Aug 2025
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238  # v6.2.0
         with:
-          node-version: 20
+          node-version: 24
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
@@ -95,6 +95,4 @@ jobs:
         shell: bash
         run: |
           echo "About to run: npm publish --provenance --tag ${{ steps.npm-tag.outputs.tag }}"
-          npm publish --provenance --tag ${{ steps.npm-tag.outputs.tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN="" npm publish --provenance --tag ${{ steps.npm-tag.outputs.tag }}
