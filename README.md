@@ -61,31 +61,21 @@ console.log(customPolicy.toString());
 
 ## Publishing
 
-This package is automatically published to npm when:
+Releases are fully automated via [semantic-release](https://semantic-release.gitbook.io/). Merging to `master` triggers a release if any qualifying commits are present — no manual tagging or version bumps required.
 
-1. **Tests pass**: All tests must pass across Node.js versions 16, 18, and 20
-2. **Version tag is pushed**: Create and push a git tag following semantic versioning
+### Commit message format
 
-### Publishing Steps
+Commits must follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-1. Update the version in `package.json`:
-   ```bash
-   npm version patch    # For bug fixes (1.0.0 -> 1.0.1)
-   npm version minor    # For new features (1.0.0 -> 1.1.0)  
-   npm version major    # For breaking changes (1.0.0 -> 2.0.0)
-   npm version prerelease --preid=beta  # For beta releases (1.0.0 -> 1.0.1-beta.0)
-   ```
+| Commit prefix | Release type |
+|---|---|
+| `fix:` | Patch (`1.0.0` → `1.0.1`) |
+| `feat:` | Minor (`1.0.0` → `1.1.0`) |
+| `BREAKING CHANGE:` footer | Major (`1.0.0` → `2.0.0`) |
+| `chore:`, `docs:`, `test:`, etc. | No release |
 
-2. Push the tag to trigger publishing:
-   ```bash
-   git push origin master --tags
-   ```
+### What happens on merge to master
 
-The workflow will:
-- Run tests across multiple Node.js versions
-- Only publish if all tests pass (using `needs: test`)
-- Publish with the appropriate npm tag (`latest` for stable, `beta` for pre-releases)
-- Use provenance for enhanced security
-
-### Tag Format
-Tags must follow the format: `v1.2.3` or `v1.2.3-beta` or `v1.2.3-beta.1`
+1. Tests run across Node.js 16, 18, and 20
+2. semantic-release analyzes commits since the last release
+3. If a release is warranted: creates a GitHub Release, pushes a `v*` tag, and publishes to npm with provenance
