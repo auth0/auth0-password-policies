@@ -60,21 +60,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Release
-        id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          OLD_VERSION=$(node -p "require('./package.json').version")
-          npx semantic-release
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
-            echo "released=true" >> $GITHUB_OUTPUT
-          else
-            echo "released=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Publish to npm
-        if: steps.release.outputs.released == 'true'
-        env:
           NODE_AUTH_TOKEN: ""
-        run: npm publish --access public --provenance
+        run: npx semantic-release
