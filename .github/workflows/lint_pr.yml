@@ -20,5 +20,5 @@ jobs:
           # When using "Squash and merge" on a PR with only one commit, GitHub
           # will suggest using that commit message instead of the PR title for the
           # merge commit, and it's easy to commit this by mistake. This option
-          # ensures validation of the commit message for single commit PRs. 
+          # ensures validation of the commit message for single commit PRs.
           validateSingleCommit: true
